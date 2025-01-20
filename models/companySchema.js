@@ -88,7 +88,8 @@ const companySchema = new mongoose.Schema({
         required: true
     },
     followers: [],
-    allMessages: []
+    allMessages: [],
+    companyReviews: []
 })
 
 // Create a model to store companies

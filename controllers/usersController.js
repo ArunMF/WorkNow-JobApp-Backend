@@ -1,7 +1,8 @@
 // Import users collection
 const users = require('../models/allUsersSchema');
+const jobs = require('../models/jobsSchema')
 
-// function to generate unique id for jobseeker and company
+// function to generate unique id for jobseeker
 const generateUniqueId = async () => {
     let uniqueId;
     let isUnique = false;
@@ -18,7 +19,7 @@ const generateUniqueId = async () => {
 // API to create jobseeker account
 exports.signUp = async (req, res) => {
     const userData = req.body;
-    
+
     try {
         const checkUser = await users.findOne({ email: userData.email });
         if (checkUser) {
@@ -26,13 +27,24 @@ exports.signUp = async (req, res) => {
         } else {
             const uniqueUserId = await generateUniqueId();
             const newData = { userId: uniqueUserId, ...userData }
-            
+
             const newUser = new users(newData);
             await newUser.save()
-            res.status(200).json({ message: "Account created successfully. Welcome aboard!"});
+            res.status(200).json({ message: "Account created successfully. Welcome aboard!" });
         }
     }
     catch (error) {
         return res.status(500).json({ error: error.message });
     }
 };
+
+// API to get all jobs
+exports.getAllJobs = async (req, res) => {
+    try{
+        const allJobs = await jobs.find({status: "posted"});
+        res.status(200).json({jobs: allJobs})
+    }
+    catch(error){
+        return res.status(500).json({ error: error.message });
+    }
+}
